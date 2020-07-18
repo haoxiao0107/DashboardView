@@ -40,14 +40,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mDashboardView3.setOnClickListener(this);
         mDashboardView4.setOnClickListener(this);
 
-        mDashboardView2.setCreditValueWithAnim(new Random().nextInt(600) + 350);
+        mDashboardView1.setRealTimeValue(new Random().nextInt(100));
+        mDashboardView2.setCreditValueWithAnim(new Random().nextInt(950 - 350) + 350);
+        mDashboardView3.setCreditValue(new Random().nextInt(950 - 350) + 350);
+
+        mDashboardView4.setVelocity(new Random().nextInt(180));
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.dashboard_view_1:
-                mDashboardView1.setRealTimeValue(new Random().nextInt(100));
+                if (isAnimFinished) {
+                    ObjectAnimator animator = ObjectAnimator.ofInt(mDashboardView1, "mRealTimeValue",
+                            mDashboardView1.getRealTimeValue(), new Random().nextInt(100));
+                    animator.setDuration(1500).setInterpolator(new LinearInterpolator());
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            isAnimFinished = false;
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            isAnimFinished = true;
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            isAnimFinished = true;
+                        }
+                    });
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            int value = (int) animation.getAnimatedValue();
+                            mDashboardView1.setRealTimeValue(value);
+                        }
+                    });
+                    animator.start();
+                }
 
                 break;
             case R.id.dashboard_view_2:
@@ -55,7 +87,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.dashboard_view_3:
-                mDashboardView3.setCreditValue(new Random().nextInt(950 - 350) + 350);
+                if (isAnimFinished) {
+                    ObjectAnimator animator = ObjectAnimator.ofInt(mDashboardView3, "mRealTimeValue",
+                            mDashboardView3.getCreditValue(), new Random().nextInt(950 - 350) + 350);
+                    animator.setDuration(1500).setInterpolator(new LinearInterpolator());
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            isAnimFinished = false;
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            isAnimFinished = true;
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+                            isAnimFinished = true;
+                        }
+                    });
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation) {
+                            int value = (int) animation.getAnimatedValue();
+                            mDashboardView3.setCreditValue(value);
+                        }
+                    });
+                    animator.start();
+                }
 
                 break;
             case R.id.dashboard_view_4:
